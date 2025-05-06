@@ -1,7 +1,9 @@
-const cells=document.querySelectorAll(".cell");
-const statusMessage= document.querySelector("#statusMessage");
-const restartButton= document.querySelector("#restartButton");
-const winConditions= 
+class tictactoe{
+constructor(){
+this.cells=document.querySelectorAll(".cell");
+this.statusMessage= document.querySelector("#statusMessage");
+this.restartButton= document.querySelector("#restartButton");
+this.winConditions= 
 [
     [0,1,2],
     [3,4,5],
@@ -12,45 +14,47 @@ const winConditions=
     [0,4,8],
     [2,4,6 ]
 ];
-let options=["","","","","","","","",""];
-let currentPlayer="X";
-let running=false;
+this.options=["","","","","","","","",""];
+this.currentPlayer="X";
+this.running=false;
+this.initializeGame();
+ }
 
-initializeGame();
-function initializeGame(){
-    cells.forEach(cell => cell.addEventListener("click",cellClicked));
-    restartButton.addEventListener("click",restartGame);
-    statusMessage.textContent = `${currentPlayer}'s turn`;
-    running=true;
+initializeGame(){
+    this.cells.forEach(cell => cell.addEventListener("click" ,(e) => this.cellClicked(e)));
+    this.restartButton.addEventListener("click", () => this.restartGame());
+    this.statusMessage.textContent = `${this.currentPlayer}'s turn`;
+    this.running=true;
 }
 
-function cellClicked(){
-    const cellIndex=parseInt(this.getAttribute("cellIndex"));
-    if(options[cellIndex] != "" || !running){
+cellClicked(e){
+    const cell =e.target;
+    const cellIndex=parseInt(cell.getAttribute("cellIndex"));
+    if(this.options[cellIndex] !== "" || !this.running){
         return;
     }
-    updateCell(this,cellIndex);
-    checkWinner();
+    this.updateCell(cell,cellIndex);
+    this.checkWinner();
 }
 
-function updateCell(cell,index){
-    options[index]=currentPlayer;
-    cell.textContent=currentPlayer;
+updateCell(cell,index){
+    this.options[index]=this.currentPlayer;
+    cell.textContent=this.currentPlayer;
 }
 
-function changePlayer(){
-    currentPlayer=(currentPlayer == "X") ? "O" : "X";
-    statusMessage.textContent=`${currentPlayer}'s turn`;
+changePlayer(){
+    this.currentPlayer=(this.currentPlayer === "X") ? "O" : "X";
+    this.statusMessage.textContent=`${this.currentPlayer}'s turn`;
 }
 
-function checkWinner(){
+checkWinner(){
     let roundWon=false;
 
-    for(let i=0; i<winConditions.length;i++){
-        const condition=winConditions[i];
-        const cellA=options[condition[0]];
-        const cellB=options[condition[1]];
-        const cellC=options[condition[2]];
+    for(let i=0; i<this.winConditions.length;i++){
+        const condition=this.winConditions[i];
+        const cellA=this.options[condition[0]];
+        const cellB=this.options[condition[1]];
+        const cellC=this.options[condition[2]];
         
         if(cellA=="" || cellB=="" || cellC==""){
             continue;
@@ -63,22 +67,28 @@ function checkWinner(){
 
 }
     if(roundWon){
-        statusMessage.textContent=`${currentPlayer} wins:)`;
-        running=false;
+        this.statusMessage.textContent=`${this.currentPlayer} wins:)`;
+        this.running=false;
     }
-    else if(!options.includes("")){
-        statusMessage.textContent=`Draw`;
-        running=false;
+    else if(!this.options.includes("")){
+        this.statusMessage.textContent=`Draw`;
+        this.running=false;
     }
     else{
-        changePlayer();
+        this.changePlayer();
     }
 }
 
-function restartGame(){
-    currentPlayer="X";
-    options=["","","","","","","","",""];
-    statusMessage.textContent=`${currentPlayer}'s turn`;
-    cells.forEach(cell => cell.textContent="");
-    running=true;
+restartGame(){
+    this.currentPlayer="X";
+    this.options=["","","","","","","","",""];
+    this.statusMessage.textContent=`${this.currentPlayer}'s turn`;
+    this.cells.forEach(cell => cell.textContent="");
+    this.running=true;
 }
+}
+
+
+window.addEventListener("DOMContentLoaded", () => {
+    new tictactoe();
+});
